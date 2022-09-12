@@ -78,13 +78,13 @@ Aluno* removeNoFim(LSE *ls){
         else
         {
             if(aux->proximo->proximo!=NULL){
-                Aluno *posProx = aux->proximo->proximo;
+                //Aluno *posProx = aux->proximo->proximo;
                 do
                 {
                     aux = aux->proximo;
-                    posProx = posProx->proximo;
+                    //posProx = posProx->proximo;
 
-                } while (posProx != NULL);
+                } while (aux->proximo->proximo != NULL);
             }
             aux->proximo = NULL;
             ls->n_elementos--;
