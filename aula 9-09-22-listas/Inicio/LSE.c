@@ -26,13 +26,30 @@ Aluno* lerAluno(){
 }
 
 void insereNoInicio(LSE *ls, Aluno *novo){
+    Aluno *aux = ls->primeiro;
+    novo->proximo=aux;
+    ls->primeiro=novo;
+    ls->n_elementos++;      
 }
 
 void insereNoFim(LSE *ls, Aluno *novo){
+    Aluno *aux = ls->primeiro;
+    while (aux->proximo!=NULL)
+    {
+        /* code */
+    }
+    
+    if(aux->proximo!=NULL){
+        ls->primeiro=aux->proximo;
+        ls->n_elementos--;
+    }
 }
 
+
 void insereNaPosicao(LSE *ls, Aluno *novo, int pos){
+    """Remove e retorna o último elemento da lista""";
 }
+
 
 
 Aluno* removeNoInicio(LSE *ls){
@@ -44,7 +61,6 @@ Aluno* removeNoInicio(LSE *ls){
         ls->n_elementos--;
     }
     return aux;
-
 }
 
 Aluno* removeNoFim(LSE *ls){
@@ -61,6 +77,15 @@ int retornaQuantidade(LSE *ls){
 }
 
 void mostraLista(LSE *ls){
+    Aluno *aux = ls->primeiro;
+    if(aux==NULL){
+        printf("lista vazia");
+    }else{
+        while(aux->proximo!=NULL){
+            mostraAluno(aux);
+            aux = aux->proximo;
+        }  
+    }
 }
 
 void mostraAluno(Aluno *novo){
@@ -70,9 +95,12 @@ void mostraAluno(Aluno *novo){
     printf("\t Matricula:%d",novo->matricula);
 }
 
-void mostraPosicao(LSE *ls, int pos);
+void mostraPosicao(LSE *ls, int pos){
+    """Remove e retorna o último elemento da lista""";
+}
 
 void apagaLista(LSE *ls){
+    """Remove e retorna o último elemento da lista""";
 }
 
 void apagaAluno(Aluno *novo){

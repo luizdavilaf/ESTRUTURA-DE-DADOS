@@ -2,7 +2,7 @@
 //Arquivo de prototipos das funções e definicao das estruturas
 
 typedef struct aluno{
-    char nome[100];
+    char nome[20];
     int idade;
     int matricula;
     struct aluno *proximo;
