@@ -65,25 +65,22 @@ Aluno* removeNoFim(LSE *ls){
     """Remove e retorna o último elemento da lista""";
     Aluno *aux = ls->primeiro;
     
-    if (aux == NULL)
+    if (aux == NULL) //se a lista é vazia
     {
         printf("lista vazia");
     }
     else{        
-        if (aux->proximo==NULL)
+        if (aux->proximo==NULL) //se o segundo é nulo
         {
             aux=NULL;
             ls->n_elementos--;
         }
         else
         {
-            if(aux->proximo->proximo!=NULL){
-                //Aluno *posProx = aux->proximo->proximo;
+            if(aux->proximo->proximo!=NULL){                
                 do
                 {
-                    aux = aux->proximo;
-                    //posProx = posProx->proximo;
-
+                    aux = aux->proximo;    
                 } while (aux->proximo->proximo != NULL);
             }
             aux->proximo = NULL;
