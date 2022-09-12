@@ -26,23 +26,21 @@ Aluno* lerAluno(){
 }
 
 void insereNoInicio(LSE *ls, Aluno *novo){
-    Aluno *aux = ls->primeiro;
-    novo->proximo=aux;
-    ls->primeiro=novo;
-    ls->n_elementos++;      
+    novo->proximo = ls->primeiro;
+    ls->primeiro = novo;
+    ls->n_elementos++;
 }
 
 void insereNoFim(LSE *ls, Aluno *novo){
     Aluno *aux = ls->primeiro;
     while (aux->proximo!=NULL)
     {
-        /* code */
+        aux = aux->proximo;
     }
+    aux->proximo=novo;
+    novo->proximo=NULL;
+    ls->n_elementos++;    
     
-    if(aux->proximo!=NULL){
-        ls->primeiro=aux->proximo;
-        ls->n_elementos--;
-    }
 }
 
 
@@ -65,6 +63,33 @@ Aluno* removeNoInicio(LSE *ls){
 
 Aluno* removeNoFim(LSE *ls){
     """Remove e retorna o último elemento da lista""";
+    Aluno *aux = ls->primeiro;
+    
+    if (aux == NULL)
+    {
+        printf("lista vazia");
+    }
+    else{        
+        if (aux->proximo==NULL)
+        {
+            aux=NULL;
+            ls->n_elementos--;
+        }
+        else
+        {
+            if(aux->proximo->proximo!=NULL){
+                Aluno *posProx = aux->proximo->proximo;
+                do
+                {
+                    aux = aux->proximo;
+                    posProx = posProx->proximo;
+
+                } while (posProx != NULL);
+            }
+            aux->proximo = NULL;
+            ls->n_elementos--;
+        }
+    }
 }
 
 Aluno* removeNaPosicao(LSE *ls, int pos){
@@ -77,22 +102,23 @@ int retornaQuantidade(LSE *ls){
 }
 
 void mostraLista(LSE *ls){
-    Aluno *aux = ls->primeiro;
+    Aluno *aux = ls->primeiro;   
     if(aux==NULL){
         printf("lista vazia");
     }else{
-        while(aux->proximo!=NULL){
+        do
+        {
             mostraAluno(aux);
             aux = aux->proximo;
-        }  
+        } while (aux!= NULL);
     }
 }
 
 void mostraAluno(Aluno *novo){
     """Mostra os dados de um Elemento Aluno""";
-    printf("\n\t Nome:%s",novo->nome);
+    printf("\t Nome:%s",novo->nome);
     printf("\t Idade:%d",novo->idade);
-    printf("\t Matricula:%d",novo->matricula);
+    printf("\t Matricula:%d\n",novo->matricula);
 }
 
 void mostraPosicao(LSE *ls, int pos){
