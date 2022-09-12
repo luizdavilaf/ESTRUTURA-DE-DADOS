@@ -90,6 +90,7 @@ Aluno* removeNoFim(LSE *ls){
             ls->n_elementos--;
         }
     }
+    return aux;
 }
 
 Aluno* removeNaPosicao(LSE *ls, int pos){
