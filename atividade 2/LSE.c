@@ -360,10 +360,9 @@ LSE *criaNovoGrupo(LSE *ls, LSE *familia)
     while (aux != NULL)
     {
         if (aux->tipo == 'f')
-        {
-            Contato aux2 = *aux;            
+        {                       
             Contato *aux3;
-            aux3 = cadastraContato(aux2.nome, aux2.telefone, aux2.tipo);
+            aux3 = cadastraContato(aux->nome, aux->telefone, aux->tipo);
             insereNoFim(familia, aux3);
         }
         aux = aux->proximo;
@@ -381,7 +380,7 @@ void menu2(LSE *ls)
     char nome[20];
     Contato *aux;
     LSE *familia = criaListaLSE();
-    /* aux = cadastraContato("rob", "1231", 'o');
+   /*  aux = cadastraContato("rob", "1231", 'o');
     insereNoInicio(ls, aux);
     aux = cadastraContato("nic", "22333", 'f');
     insereNoInicio(ls, aux);
