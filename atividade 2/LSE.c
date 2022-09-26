@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "LSE.h"
 
 LSE *criaListaLSE()
@@ -35,9 +36,9 @@ Contato *criaNovoContato()
     scanf("%s", nome);
     printf("\nInforme seu Telefone:");
     scanf("%s", telefone);
-    /* printf("\nInforme F - Familia O - Outros:");
-    scanf("%c", &tp); */
-    // return cadastraContato(nome, telefone, tp);
+    printf("\nInforme F - Familia O - Outros:");
+    scanf(" %c", &tp);
+    getchar();
     return cadastraContato(nome, telefone, tp);
 }
 
@@ -47,9 +48,13 @@ void insereNoInicio(LSE *ls, Contato *novo)
     "insere um novo elemento no inicio da lista"
     "";
     if (ls->primeiro == NULL)
+    {
         novo->proximo = NULL;
+    }
     else
+    {
         novo->proximo = ls->primeiro;
+    }
     ls->primeiro = novo;
     ls->n_elementos++;
 }
@@ -68,8 +73,8 @@ void insereNoFim(LSE *ls, Contato *novo)
         {
             aux = aux->proximo;
         }
-        novo->proximo = NULL;
         aux->proximo = novo;
+        novo->proximo = NULL;
         ls->n_elementos++;
     }
 }
@@ -80,13 +85,13 @@ void insereNaPosicao(LSE *ls, Contato *novo, int pos)
     "Insere na posição desejada da Lista"
     "";
     Contato *aux = ls->primeiro;
-    if (ls->n_elementos <= 0)
-    { // se a lista é vazia ou a posição é negativa
+    if (aux == NULL || pos <= 0)
+    { // se a lista é vazia ou a posição é negativa ou igual a zero
         insereNoInicio(ls, novo);
     }
     else if (pos >= ls->n_elementos)
-    { // se a posição desejada é a ultima ou maior q a ultima
-        insereNoInicio(ls, novo);
+    { // se a posição desejada é a ultima ou maior q a ultima, insere no fim
+        insereNoFim(ls, novo);
     }
     else
     {
@@ -124,14 +129,13 @@ Contato *removeNoFim(LSE *ls)
     Contato *anterior = aux;
     if (aux == NULL) // se a lista é vazia
     {
-        printf("lista vazia");
+        return aux;
     }
     else if (aux->proximo == NULL)
     { // se o segundo é nulo
-        anterior = aux;
-        aux = NULL;
+        ls->primeiro = NULL;
         ls->n_elementos--;
-        return anterior;
+        return aux;
     }
     else
     {
@@ -142,6 +146,7 @@ Contato *removeNoFim(LSE *ls)
         }
         anterior->proximo = NULL;
         ls->n_elementos--;
+        aux->proximo = NULL;
         return aux;
     }
     return aux;
@@ -152,25 +157,37 @@ Contato *removeNaPosicao(LSE *ls, int pos)
     ""
     "Remove e retorna o elemento da lista na posição indicada"
     "";
+    Contato *aux = ls->primeiro;
+    if (pos < 0)
+    {
+        printf("posicao nao encontrada, nenhum contato removido!!");
+        return NULL;
+    }
     if (pos >= ls->n_elementos)
     { // se a posição é maior que lista
-        removeNoFim(ls);
+        aux = removeNoFim(ls);
+        return aux;
     }
-    else if (pos <= 0)
+    else if (pos == 0)
     {
-        removeNoInicio(ls);
+        aux = removeNoInicio(ls);
+        return aux;
     }
     else
     {
-        Contato *aux = ls->primeiro;
         Contato *anterior = aux; // posicao atual do i do for(anterior a posicao a ser removida)
-        for (int i = 0; i < pos - 1; i++)
+        if (aux == NULL)
+        {
+            return aux;
+        }
+        for (int i = 0; i < pos; i++)
         {
             anterior = aux;
             aux = aux->proximo;
         }
         anterior->proximo = aux->proximo; // proximo do anterior vai ser o proximo do removido
         ls->n_elementos--;
+        aux->proximo = NULL;
         return aux;
     }
 }
@@ -189,11 +206,11 @@ void mostraLista(LSE *ls)
     if (aux == NULL)
         printf("\n Lista Vazia!!\n");
     else
-        do
-        {
+        while (aux != NULL)
+        {            
             mostraContato(aux);
             aux = aux->proximo;
-        } while (aux != NULL);
+        } 
 }
 
 void mostraContato(Contato *novo)
@@ -209,7 +226,7 @@ void mostraContato(Contato *novo)
 void mostraContatoPosicao(LSE *ls, int pos)
 {
     Contato *aux = ls->primeiro;
-    if (ls->n_elementos == 0)
+    if (aux == NULL)
     { // se a lista é vazia
         printf("lista vazia");
     }
@@ -223,7 +240,7 @@ void mostraContatoPosicao(LSE *ls, int pos)
         {                          // se a posição desejada é a ultima ou maior q a ultima
             pos = ls->n_elementos; // vai mostrar o ultimo
         }
-        for (int i = 0; i < pos - 1; i++)
+        for (int i = 0; i < pos; i++) // VAI CONTAR A POSICAO ZERO COMO ELEMENTO
         {
             aux = aux->proximo;
         }
@@ -233,6 +250,12 @@ void mostraContatoPosicao(LSE *ls, int pos)
 
 void apagaLista(LSE *ls)
 {
+    Contato *aux = ls->primeiro;
+    while (aux != NULL)
+    {
+        mostraContato(aux);
+        aux = removeNoFim(ls);
+    }
 }
 
 void apagaContato(Contato *novo)
@@ -265,9 +288,12 @@ int buscaContatoPorNome(LSE *ls, char nome[])
 
 LSE *divideLista(LSE *ls, int inicio, int fim)
 {
-    ""
-    "Divide a lista, recebe uma lista (LSE *l, int inicio, int fim), retorna um sublista com os contatos contidos entre os índices início e fim"
-    "";
+    /* Divide a lista, recebe uma lista (LSE *l, int inicio, int fim), retorna um sublista com os
+    contatos contidos entre os índices início e fim
+
+    Obs: A lista recebida por parâmetro (*l) terá os elementos entre as posição
+    início e fim retirados e inseridos na nova lista, que será retornada por parâmetro (ponteiro de lista
+LSE*). */
     Contato *aux = ls->primeiro;
     LSE *nova = criaListaLSE();
     if (aux == NULL)
@@ -279,21 +305,14 @@ LSE *divideLista(LSE *ls, int inicio, int fim)
     { // caso seja maior, vai pegar o ultimo como final da sublista
         fim = ls->n_elementos;
     }
-    for (int i = 0; i < fim - 1; i++)
+    for (int i = 0; i <= fim; i++)
     {
-        if (i == inicio - 1)
-        { // se for o primeiro da lista vai ser adicionado
-            nova->primeiro = aux;
-            nova->n_elementos++;
-        }
-        else if (i > (inicio - 1))
+        if (i >= (inicio))
         {
-            nova->n_elementos++;
+            aux = removeNaPosicao(ls, inicio);
+            insereNoFim(nova, aux);
         }
-        aux = aux->proximo;
     }
-    aux->proximo = NULL;
-    nova->n_elementos++;
     return nova;
 }
 
@@ -302,34 +321,59 @@ void insereOrdenado(LSE *ls, Contato *novo)
     ""
     "Insere na posição alfabética da Lista"
     "";
-    Contato *aux = ls->primeiro;
-    Contato *anterior = aux;
 
-    if (aux == NULL)
+    Contato *atual = ls->primeiro;
+
+    if (atual == NULL)
     { // se a lista é vazia ou a posição é negativa
-        insereNoInicio(ls, novo);
+        return insereNoInicio(ls, novo);
     }
-    else if (strcmp(novo->nome, aux->nome) < 0)
+    else if (strcmp(novo->nome, atual->nome) <= 0)
     { // se é menor q o primeiro
-        insereNoInicio(ls, novo);
-    }else if((strcmp(novo->nome, aux->nome) > 0)&&(aux->proximo==NULL)){
-        insereNoFim(ls,novo);
+        return insereNoInicio(ls, novo);
     }
-    else
-    {        
-        for(int i=0; i<ls->n_elementos;i++){
-            if(strcmp(novo->nome, aux->nome) < 0){
-            novo->proximo = aux;
-            anterior->proximo = novo;
-            ls->n_elementos++;
-            i=ls->n_elementos;                           
-            }
-            anterior = aux;
-            aux = aux->proximo;
+
+    Contato *proximo = atual->proximo;
+    while (proximo != NULL)
+    {
+        if (strcmp(novo->nome, proximo->nome) < 0)
+        {
+            goto insert;
         }
+        atual = proximo;
+        proximo = proximo->proximo;
     }
+insert:
+    atual->proximo = novo;
+    novo->proximo = proximo;
+    ls->n_elementos++;
 }
 
+LSE *criaNovoGrupo(LSE *ls, LSE *familia)
+{
+    Contato *aux = ls->primeiro;
+    if (aux == NULL)
+    {
+        printf("Lista de contatos vazia, não foi possivel criar o grupo da familia");
+        return familia;
+    }
+    while (aux != NULL)
+    {
+        if (aux->tipo == 'f')
+        {
+            Contato aux2 = *aux;            
+            Contato *aux3;
+            aux3 = cadastraContato(aux2.nome, aux2.telefone, aux2.tipo);
+            insereNoFim(familia, aux3);
+        }
+        aux = aux->proximo;
+    }
+    if (familia->primeiro == NULL)
+    {
+        printf("Não foram encontrados membros da familia");
+    }
+    return familia;
+}
 void menu2(LSE *ls)
 {
     printf("\n Menu para controlar a Agenda de Contatos:");
@@ -337,6 +381,15 @@ void menu2(LSE *ls)
     char nome[20];
     Contato *aux;
     LSE *familia = criaListaLSE();
+    /* aux = cadastraContato("rob", "1231", 'o');
+    insereNoInicio(ls, aux);
+    aux = cadastraContato("nic", "22333", 'f');
+    insereNoInicio(ls, aux);
+    aux = cadastraContato("mara", "33333", 'f');
+    insereNoInicio(ls, aux);
+    aux = cadastraContato("luiz", "44444", 'f');
+    insereNoInicio(ls, aux); */
+
     do
     {
         // system("clear");
@@ -346,12 +399,13 @@ void menu2(LSE *ls)
         printf("\n -- 3 - Consultar um contato pelo Nome:");
         printf("\n -- 4 - Mostrar Lista Ordenada Nome:");
         printf("\n -- 5 - Criar o grupo familia:");
+        printf("\n -- 6 - Apaga lista");
         printf("\n -- 0 - Sair do Programa:\n");
         printf("\nInforme sua Opçao:");
         scanf("%d", &op);
         fflush(stdin);
 
-        system("clear");
+        system("cls");
 
         switch (op)
         {
@@ -383,14 +437,18 @@ void menu2(LSE *ls)
             mostraLista(ls);
             break;
 
-        /* case 5:
+        case 5:
             printf("\n Apaga o grupo da Família: \n");
             apagaLista(familia);
             printf("\n Cria novo o grupo da Família: \n");
-            criaNovoGrupo(familia);
+            criaNovoGrupo(ls, familia);
             printf("\n Mostra o grupo da Família: \n");
             mostraLista(familia);
-            break; */
+            break;
+        case 6:
+            printf("\n Apaga Lista \n");
+            apagaLista(ls);
+            break;
         default:
             printf("\nOpção Inválida!!\n");
         }
@@ -402,6 +460,10 @@ void menu(LSE *ls)
     printf("\nMenu para controlar a Lista de Contatos:");
     int op, posicao, id = 1, posicao_inicial, posicao_final;
     Contato *aux;
+    /*  insereNoInicio(ls, cadastraContato("rob", "1231", 'o'));
+        insereNoInicio(ls, cadastraContato("nic", "22333", 'f'));
+        insereNoInicio(ls, cadastraContato("mara", "33333", 'f'));
+        insereNoInicio(ls, cadastraContato("luiz", "44444", 'f')); */
     do
     {
         // system("clear");
@@ -509,6 +571,7 @@ void menu(LSE *ls)
             printf("Informe a posição final:");
             scanf("%d", &posicao_final);
             fflush(stdin);
+            printf("Sublista:");
             mostraLista(divideLista(ls, posicao_inicial, posicao_final));
             break;
         case 0:

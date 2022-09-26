@@ -19,6 +19,8 @@ LSE* criaListaLSE();
 
 LSE* divideLista(LSE *ls, int inicio, int fim);
 
+LSE* criaNovoGrupo(LSE *ls, LSE * familia);
+
 Contato* cadastraContato(char nome[],char tel[], char tipo);
 
 Contato* criaNovoContato();

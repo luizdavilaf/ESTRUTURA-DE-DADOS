@@ -1,10 +1,13 @@
+// biblioteca de funções, implementações
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "LSE.h"
+int main()
+{
 
-int main(){
-
-    //cria a Agenda de Contatos 
+    // cria a Agenda de Contatos
     LSE *agenda = criaListaLSE();
 
     //menu(agenda);
