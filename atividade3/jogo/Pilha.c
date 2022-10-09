@@ -15,9 +15,9 @@ void sequencia(int vet[])
 {
     int i = 0, j, igual;
     srand(time(NULL));
-    while (i < 16)
+    while (i < 12)
     {
-        vet[i] = rand() % 16; // sorteia um número
+        vet[i] = rand() % 12; // sorteia um número
         igual = 0;
         for (j = 0; j < i; j++)
         { // percorre a parte do vetor já preenchida
@@ -173,14 +173,14 @@ void comecaJogoFacil(){
     Pilha *pilha4 = criaPilha();
     Pilha *pilhaTemp1 = criaPilha();
     Pilha *pilhaTemp2 = criaPilha();
-    int cores[16] = {1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4};
-    int vet[16];
+    int cores[12] = {1,1,1,2,2,2,3,3,3,4,4,4};
+    int vet[12];
     sequencia(vet);
-    Disco *discos[16];
-    for(int i=0;i<16;i++){
+    Disco *discos[12];
+    for(int i=0;i<12;i++){
         discos[i] = criaElementoPilhaDisco(cores[vet[i]]);
     }   
-    for(int i=0;i<16;i++){
+    for(int i=0;i<12;i++){
         mostraDisco(*discos[i]);
     }
 }
