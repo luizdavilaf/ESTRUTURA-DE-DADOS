@@ -5,18 +5,20 @@ typedef struct disco{
 
 typedef struct pilha{   //atributos de pilha
     Disco *topo;
+    int tamanhoMax;
     int qtd;
+    int numeroPilha;
 }Pilha;
 
 void menu();
 
-Pilha* criaPilha();
+Pilha *criaPilha(int tamanhoMax, int numeroPilha);
 
 Disco *criaElementoPilhaDisco(int cor);
 
 void comecaJogoFacil();
 
-void push(Pilha *p, Disco *e); // insereNoInicio()
+int push(Pilha *p, Disco *e); // insereNoInicio()
 
 Disco* pop(Pilha *p);  //removeNoInicio()
 
@@ -31,3 +33,7 @@ Pilha * invertePilha(Pilha *p);
 void invertePilha2(Pilha **p);
 
 void mostraPilha(Pilha *p);
+
+int checkGameStatus(Pilha *pilhas[]);
+
+int getCorDaPilha(Pilha *p);
