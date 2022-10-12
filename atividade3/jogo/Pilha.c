@@ -60,7 +60,7 @@ Pilha *criaPilha(int tamanhoMax, int numeroPilha)
     p->tamanhoMax = tamanhoMax;
     p->topo = NULL;
     p->qtd = 0;
-    p->numeroPilha=numeroPilha;
+    p->numeroPilha = numeroPilha;
     return p;
 }
 
@@ -76,9 +76,10 @@ int push(Pilha *p, Disco *disco)
 {
     /* printf("\ntamanho: %d",(p->tamanhoMax));
     printf("\nqtd: %d", (p->qtd)); */
-    if(p->tamanhoMax==p->qtd){
-        printf(" Pilha cheia, nao foi possivel adicionar o disco aqui!"); 
-        return 1;       
+    if (p->tamanhoMax == p->qtd)
+    {
+        printf(" Pilha cheia, nao foi possivel adicionar o disco aqui!");
+        return 1;
     }
     else if ((disco != NULL) && (p->tamanhoMax != p->qtd))
     {
@@ -124,29 +125,29 @@ void mostraDisco(Disco di)
     {
     case 1:
         red();
-        // printf("\n O");
-        printf("\n %d ", di.cor);
+        // printf("\t O");
+        printf("   %d ", di.cor);
         reset();
         break;
     case 2:
         blue();
-        // printf("\n O");
-        printf("\n %d ", di.cor);
+        // printf("\t O");
+        printf("   %d ", di.cor);
         reset();
         break;
 
     case 3:
         green();
-        // printf("\n O");
-        printf("\n %d ", di.cor);
+        // printf("\t O");
+        printf("   %d ", di.cor);
         reset();
 
         break;
 
     case 4:
         yellow();
-        // printf("\n O");
-        printf("\n %d ", di.cor);
+        // printf("\t O");
+        printf("   %d ", di.cor);
         reset();
         break;
     }
@@ -177,7 +178,8 @@ void apagaPilha(Pilha *p)
 void mostraPilha(Pilha *p)
 {
     Disco *aux = p->topo;
-    if (aux == NULL){
+    if (aux == NULL)
+    {
         if (p->tamanhoMax != 1)
         {
             printf("\nPilha %d\n Vazia\n", p->numeroPilha);
@@ -186,75 +188,125 @@ void mostraPilha(Pilha *p)
         {
             printf("\nPilha %d\ntemporaria\n Vazia\n", p->numeroPilha);
         }
-    }else{
+    }
+    else
+    {
         while (aux != NULL)
         {
-            mostraDisco(*aux);
+            printf("\n");
+            mostraDisco(*aux);            
             aux = aux->proximo;
         }
-        if(p->tamanhoMax!=1){
+        if (p->tamanhoMax != 1)
+        {
             printf("\nPilha %d\n\n", p->numeroPilha);
-        }else{
-            printf("\nPilha %d\ntemporaria\n", p->numeroPilha);
+        }
+        else
+        {
+            printf("\nPilha %d\ntemporaria", p->numeroPilha);
         }
     }
-       
 }
 
-int getCorDaPilha(Pilha *p){ //0 vazia ou diferente - 1 igual
+void mostraPilhasHorizontalFacil(Pilha *pilhas[], int tamanho)
+{
+
+    Disco *discos_aux[6];
+    for (int i = 0; i < tamanho; i++)
+    {
+        discos_aux[i] = pilhas[i]->topo;
+    }
+
+    for (int j = 0; j < 4; j++)
+    {
+        for (int i = 0; i < tamanho; i++)
+        {
+            if (discos_aux[i] != NULL)
+            {
+                printf("\t\t");
+                mostraDisco(*discos_aux[i]);
+                discos_aux[i] = discos_aux[i]->proximo;
+            }else{
+                printf("\t\t ");
+            }
+        }
+        printf("\n");
+    }
+    int t = 1;
+    for (int i = 0; i < tamanho; i++)
+    {
+        if (i < 4)
+        {
+            printf("\t\tPilha %d", pilhas[i]->numeroPilha);
+        }
+        else
+        {
+            printf("\t\tPilhaT%d", t);
+            t++;
+        }
+    }
+}
+
+int getCorDaPilha(Pilha *p)
+{ // 0 vazia ou diferente - 1 igual
     Disco *prox = p->topo->proximo;
     Disco *atual = p->topo;
     if (prox == NULL)
     {
-        //printf("\n  -- Pilha Vazia!!\n");
+        // printf("\n  -- Pilha Vazia!!\n");
         return 1;
     }
     else
     {
         while (prox != NULL)
-        {            
-            if ((prox->cor != atual->cor) && (prox!=NULL)){
+        {
+            if ((prox->cor != atual->cor) && (prox != NULL))
+            {
                 return 1;
             }
             atual = prox;
             prox = prox->proximo;
         }
-        return 0;        
+        return 0;
     }
 }
 
-int checkGameStatus(Pilha *pilhas[]){
+int checkGameStatus(Pilha *pilhas[])
+{
     int controle = 0;
-    for(int i=0; i<4;i++){
-        if (pilhas[i]->qtd!=3){
+    for (int i = 0; i < 4; i++)
+    {
+        if (pilhas[i]->qtd != 3)
+        {
             return 1;
-        }else{
+        }
+        else
+        {
             controle = getCorDaPilha(pilhas[i]);
-            if(controle==1){
+            if (controle == 1)
+            {
                 return 1;
             }
         }
     }
-    return 0;//se todas as 4 pilhas tiverem as cores iguais gameover
+    return 0; // se todas as 4 pilhas tiverem as cores iguais gameover
 }
 
 void comecaJogoFacil()
 {
-    /* Pilha *pilha1 = criaPilha(4,1);
-    Pilha *pilha2 = criaPilha(4,2);
-    Pilha *pilha3 = criaPilha(4,3);
-    Pilha *pilha4 = criaPilha(4,4);
-    Pilha *pilhaTemp1 = criaPilha(1,5);
-    Pilha *pilhaTemp2 = criaPilha(1,6); */
     Pilha *pilhas[6];
-    for(int i = 0; i< 6;i++){
-        if(i<4){
+    for (int i = 0; i < 6; i++)
+    {
+        if (i < 4)
+        {
             pilhas[i] = criaPilha(4, i);
-        }else{
+        }
+        else
+        {
             pilhas[i] = criaPilha(1, i);
-        }        
+        }
     }
-    int cores[12] = {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4}; //discos para distribuir 1-red,2-blue,3-green,4-yellow
+    int cores[12] = {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4}; // discos para distribuir 1-red,2-blue,3-green,4-yellow
     int vet[12];
     sequencia(vet);
     Disco *discos[12];
@@ -279,59 +331,67 @@ void comecaJogoFacil()
         }
     }
     int gameState = 1;
-    int operacao, origem, destino, erro=0;
+    int operacao, origem, destino, erro = 0;
     Disco *aux;
-    while(gameState==1){        
+    while (gameState == 1)
+    {
         printf("\n\nSelecione o movimento que deseja fazer:");
-        printf("\n -- 1 - Mostra pilhas");
+        printf("\n -- 1 - Mostra pilhas na horizontal");
         printf("\n -- 2 - Mover discos");
         printf("\n -- 3 - Sair do Jogo");
+        printf("\n -- 4 - Mostra pilhas na vertical");
         printf("\nInforme sua Opcao:");
         scanf("%d", &operacao);
         fflush(stdin);
         system("cls");
         switch (operacao)
         {
-            case 1:
-                printf("\n Mostrar pilhas\n");
-                for(int i =0; i<6;i++){
-                    mostraPilha(pilhas[i]);
-                }                
-                break;
-            case 2:
-                printf("\n Mover discos \n");
-                printf("\n Selecione a pilha que deseja retirar o disco: 0,1,2,3,4,5 \n ");
-                scanf("%d", &origem);
-                printf("\n Selecione a pilha que deseja enviar o disco: 0,1,2,3,4,5 \n ");
-                scanf("%d", &destino);
-                aux = pop(pilhas[origem]);
-                erro = push(pilhas[destino],aux);
-                if(erro==1){
-                    push(pilhas[origem], aux);
-                }
-                erro=0;
-                fflush(stdin);
-                system("cls");
-                gameState = checkGameStatus(pilhas);                
-                break;
+        case 1:            
+            mostraPilhasHorizontalFacil(pilhas, 6);
+            break;
+        case 2:
+            printf("\nMover discos \n");
+            printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4 para t1 ,5 para t2 \n ");
+            scanf("%d", &origem);
+            printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3,4 para t1 ,5 para t2  \n ");
+            scanf("%d", &destino);
+            aux = pop(pilhas[origem]);
+            erro = push(pilhas[destino], aux);
+            if (erro == 1)
+            {
+                push(pilhas[origem], aux);
+            }
+            erro = 0;
+            fflush(stdin);
+            system("cls");
+            gameState = checkGameStatus(pilhas);
+            break;
 
-            case 3:
-                printf("\n Sair do Jogo \n");
+        case 3:
+            printf("\n Sair da rodada e voltar ao menu \n");
 
-                break;
+            break;
+        case 4:
+            printf("\n vertical \n");
+            printf("\n Mostrar pilhas\n");
+            for (int i = 0; i < 6; i++)
+            {
+                mostraPilha(pilhas[i]);
+            }
+            break;
+        case 5:
+            printf("\n Sair do Jogo \n");
 
-            
+            break;
 
-            default:
-                printf("\nOpção Inválida!\n");
+        default:
+            printf("\nOpção Inválida!\n");
         }
     }
-    /* for (int i = 0; i < 6; i++)
-    {
-        mostraPilha(pilhas[i]);
-    } */
-    printf("\n Voce venceu!!! \n");
-    
+
+    printf("\n============================= VOCE VENCEU !!! ============================= \n");
+    mostraPilhasHorizontalFacil(pilhas, 6);
+    printf("\n=========================================================================== \n");
 }
 
 void menu()

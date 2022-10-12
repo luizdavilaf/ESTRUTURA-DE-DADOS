@@ -10,6 +10,12 @@ typedef struct pilha{   //atributos de pilha
     int numeroPilha;
 }Pilha;
 
+typedef struct jogo{ 
+    double tempo;
+    int movimentos;
+    char nome [10];    
+} Jogo;
+
 void menu();
 
 Pilha *criaPilha(int tamanhoMax, int numeroPilha);
