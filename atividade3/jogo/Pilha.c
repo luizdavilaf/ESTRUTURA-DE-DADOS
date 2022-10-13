@@ -66,7 +66,7 @@ Disco *criaElementoPilhaDisco(int cor)
 }
 
 int push(Pilha *p, Disco *disco)
-{    
+{
     if (p->tamanhoMax == p->qtd)
     {
         printf(" Pilha cheia, nao foi possivel adicionar o disco aqui!");
@@ -288,7 +288,7 @@ void mostraJogo(Jogo *jogo)
 {
     printf("\nNome: %s", jogo->nome);
     printf("\tTempo: %d segundos", jogo->tempo);
-    printf("\tMovimentos:%d", jogo->movimentos);    
+    printf("\tMovimentos:%d", jogo->movimentos);
     printf("\tVenceu o jogo? %s", jogo->estado);
     printf("\tDificuldade: %s\n", jogo->dificuldade);
 }
@@ -334,7 +334,7 @@ Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
         }
     }
     int gameState = 1;
-    int operacao, origem, destino, erro = 0;
+    int operacao, origem=-1, destino=-1, erro = 0;
     Disco *aux;
     time_t begin = time(NULL);
     while (gameState == 1)
@@ -347,7 +347,7 @@ Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
         printf("\nInforme sua Opcao:");
         scanf("%d", &operacao);
         fflush(stdin);
-        //system("cls");
+        // system("cls");
         switch (operacao)
         {
         case 1:
@@ -356,7 +356,8 @@ Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
         case 2:
             jogo->movimentos++;
             printf("\nMover discos \n");
-            while(origem<0 || origem>tamanho-1){
+            while (origem < 0 || origem > tamanho - 1)
+            {
                 if (tamanho == 6)
                 {
                     printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4 para t1 ,5 para t2 \n ");
@@ -370,11 +371,10 @@ Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
                     printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4\n ");
                 }
                 scanf("%d", &origem);
-                
             }
             while (destino < 0 || destino > tamanho - 1)
             {
-                
+
                 if (tamanho == 6)
                 {
                     printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3,4 para t1 e 5 para t2  \n ");
@@ -389,64 +389,66 @@ Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
                 }
                 scanf("%d", &destino);
             }
-            printf("origem: %d", origem);
-            printf("destino: %d",destino);
+            /* printf("origem: %d", origem);
+            printf("destino: %d", destino); */
             aux = pop(pilhas[origem]);
             erro = push(pilhas[destino], aux);
             if (erro == 1)
             {
                 push(pilhas[origem], aux);
-                }
-                erro = 0;
-                fflush(stdin);
-                system("cls");
-                gameState = checkGameStatus(pilhas);
-                origem=-1;
-                destino=-1;
-                break;
-            case 3:
-                printf("\n Sair da rodada e voltar ao menu \n");
-                gameState = 2;
-                break;
-            case 4:
-                printf("\n vertical \n");
-                printf("\n Mostrar pilhas\n");
-                for (int i = 0; i < tamanho; i++)
-                {
-                    mostraPilha(pilhas[i]);
-                }
-                break;
-            case 5:
-                printf("\n Sair do Jogo \n");
-                break;
-            default:
-                printf("\nOpção Inválida!\n");
             }
+            erro = 0;
+            fflush(stdin);
+            // system("cls");
+            system("clear");
+            gameState = checkGameStatus(pilhas);
+            origem = -1;
+            destino = -1;
+            break;
+        case 3:
+            printf("\n Sair da rodada e voltar ao menu \n");
+            gameState = 2;
+            break;
+        case 4:
+            printf("\n vertical \n");
+            printf("\n Mostrar pilhas\n");
+            for (int i = 0; i < tamanho; i++)
+            {
+                mostraPilha(pilhas[i]);
+            }
+            break;
+        case 5:
+            printf("\n Sair do Jogo \n");
+            break;
+        default:
+            printf("\nOpção Inválida!\n");
+        }
     }
     time_t end = time(NULL);
     jogo->tempo = (end - begin);
-    if(gameState==0){
+    if (gameState == 0)
+    {
         strcpy(jogo->estado, "sim");
         printf("\n============================= VOCE VENCEU !!! ============================= \n");
         mostraPilhasHorizontalFacil(pilhas, tamanho);
         printf("\n=========================================================================== \n");
-    }    
+    }
     return jogo;
 }
 
-Jogo *criaNovoJogo(char dificuldade[7]){
+Jogo *criaNovoJogo(char dificuldade[7])
+{
     Jogo *jogo;
     jogo = (Jogo *)malloc(sizeof(Jogo));
     strcpy(jogo->nome, "");
-    jogo->movimentos=0;
-    jogo->tempo=0;
+    jogo->movimentos = 0;
+    jogo->tempo = 0;
     strcpy(jogo->dificuldade, dificuldade);
-    strcpy(jogo->estado, "nao");    
+    strcpy(jogo->estado, "nao");
     return jogo;
 }
 
-    void
-    menu()
+void menu()
 {
     int operacao = 0;
     Jogo *jogos[100];
@@ -464,25 +466,26 @@ Jogo *criaNovoJogo(char dificuldade[7]){
         printf("\nInforme sua Opcao:");
         scanf("%d", &dificuldade);
         fflush(stdin);
-        system("cls");
+        // system("cls");
+        system("clear");
         switch (dificuldade)
         {
         case 1:
             printf("\n Nivel Facil\n");
-            jogos[contador_de_jogos] = criaNovoJogo("Facil");            
+            jogos[contador_de_jogos] = criaNovoJogo("Facil");
             jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 6);
             contador_de_jogos++;
             break;
         case 2:
             printf("\n Nivel Medio \n");
-            jogos[contador_de_jogos] = criaNovoJogo("Medio");           
+            jogos[contador_de_jogos] = criaNovoJogo("Medio");
             jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 5);
             contador_de_jogos++;
             break;
 
         case 3:
             printf("\n Nivel Dificil \n");
-            jogos[contador_de_jogos] = criaNovoJogo("Dificil");           
+            jogos[contador_de_jogos] = criaNovoJogo("Dificil");
             jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 4);
             contador_de_jogos++;
             break;
