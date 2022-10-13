@@ -4,13 +4,6 @@
 #include <time.h>
 #include "Pilha.h"
 
-/*
-1 - red
-2 - blue
-3 - green
-4 - yellow
- */
-
 void sequencia(int vet[])
 {
     int i = 0, j, igual;
@@ -73,9 +66,7 @@ Disco *criaElementoPilhaDisco(int cor)
 }
 
 int push(Pilha *p, Disco *disco)
-{
-    /* printf("\ntamanho: %d",(p->tamanhoMax));
-    printf("\nqtd: %d", (p->qtd)); */
+{    
     if (p->tamanhoMax == p->qtd)
     {
         printf(" Pilha cheia, nao foi possivel adicionar o disco aqui!");
@@ -194,7 +185,7 @@ void mostraPilha(Pilha *p)
         while (aux != NULL)
         {
             printf("\n");
-            mostraDisco(*aux);            
+            mostraDisco(*aux);
             aux = aux->proximo;
         }
         if (p->tamanhoMax != 1)
@@ -210,7 +201,6 @@ void mostraPilha(Pilha *p)
 
 void mostraPilhasHorizontalFacil(Pilha *pilhas[], int tamanho)
 {
-
     Disco *discos_aux[6];
     for (int i = 0; i < tamanho; i++)
     {
@@ -226,7 +216,9 @@ void mostraPilhasHorizontalFacil(Pilha *pilhas[], int tamanho)
                 printf("\t\t");
                 mostraDisco(*discos_aux[i]);
                 discos_aux[i] = discos_aux[i]->proximo;
-            }else{
+            }
+            else
+            {
                 printf("\t\t ");
             }
         }
@@ -292,10 +284,21 @@ int checkGameStatus(Pilha *pilhas[])
     return 0; // se todas as 4 pilhas tiverem as cores iguais gameover
 }
 
-void comecaJogoFacil()
+void mostraJogo(Jogo *jogo)
 {
+    printf("\nNome: %s", jogo->nome);
+    printf("\tTempo: %d segundos", jogo->tempo);
+    printf("\tMovimentos:%d", jogo->movimentos);    
+    printf("\tVenceu o jogo? %s", jogo->estado);
+    printf("\tDificuldade: %s\n", jogo->dificuldade);
+}
+
+Jogo *comecaJogoFacil(Jogo *jogo, int tamanho)
+{
+    printf("\nInforme seu nome:");
+    scanf("%s", jogo->nome);
     Pilha *pilhas[6];
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < tamanho; i++)
     {
         if (i < 4)
         {
@@ -333,102 +336,173 @@ void comecaJogoFacil()
     int gameState = 1;
     int operacao, origem, destino, erro = 0;
     Disco *aux;
+    time_t begin = time(NULL);
     while (gameState == 1)
     {
         printf("\n\nSelecione o movimento que deseja fazer:");
         printf("\n -- 1 - Mostra pilhas na horizontal");
         printf("\n -- 2 - Mover discos");
-        printf("\n -- 3 - Sair do Jogo");
+        printf("\n -- 3 - Voltar ao menu inicial");
         printf("\n -- 4 - Mostra pilhas na vertical");
         printf("\nInforme sua Opcao:");
         scanf("%d", &operacao);
         fflush(stdin);
-        system("cls");
+        //system("cls");
         switch (operacao)
         {
-        case 1:            
-            mostraPilhasHorizontalFacil(pilhas, 6);
+        case 1:
+            mostraPilhasHorizontalFacil(pilhas, tamanho);
             break;
         case 2:
+            jogo->movimentos++;
             printf("\nMover discos \n");
-            printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4 para t1 ,5 para t2 \n ");
-            scanf("%d", &origem);
-            printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3,4 para t1 ,5 para t2  \n ");
-            scanf("%d", &destino);
+            while(origem<0 || origem>tamanho-1){
+                if (tamanho == 6)
+                {
+                    printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4 para t1 ,5 para t2 \n ");
+                }
+                else if (tamanho == 5)
+                {
+                    printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4 para t1 \n ");
+                }
+                else if (tamanho == 4)
+                {
+                    printf("\nSelecione a pilha que deseja retirar o disco: 0,1,2,3,4\n ");
+                }
+                scanf("%d", &origem);
+                
+            }
+            while (destino < 0 || destino > tamanho - 1)
+            {
+                
+                if (tamanho == 6)
+                {
+                    printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3,4 para t1 e 5 para t2  \n ");
+                }
+                else if (tamanho == 5)
+                {
+                    printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3 e 4 para t1   \n ");
+                }
+                else if (tamanho == 4)
+                {
+                    printf("\nSelecione a pilha que deseja enviar o disco: 0,1,2,3 ou 4   \n ");
+                }
+                scanf("%d", &destino);
+            }
+            printf("origem: %d", origem);
+            printf("destino: %d",destino);
             aux = pop(pilhas[origem]);
             erro = push(pilhas[destino], aux);
             if (erro == 1)
             {
                 push(pilhas[origem], aux);
+                }
+                erro = 0;
+                fflush(stdin);
+                system("cls");
+                gameState = checkGameStatus(pilhas);
+                origem=-1;
+                destino=-1;
+                break;
+            case 3:
+                printf("\n Sair da rodada e voltar ao menu \n");
+                gameState = 2;
+                break;
+            case 4:
+                printf("\n vertical \n");
+                printf("\n Mostrar pilhas\n");
+                for (int i = 0; i < tamanho; i++)
+                {
+                    mostraPilha(pilhas[i]);
+                }
+                break;
+            case 5:
+                printf("\n Sair do Jogo \n");
+                break;
+            default:
+                printf("\nOpção Inválida!\n");
             }
-            erro = 0;
-            fflush(stdin);
-            system("cls");
-            gameState = checkGameStatus(pilhas);
+    }
+    time_t end = time(NULL);
+    jogo->tempo = (end - begin);
+    if(gameState==0){
+        strcpy(jogo->estado, "sim");
+        printf("\n============================= VOCE VENCEU !!! ============================= \n");
+        mostraPilhasHorizontalFacil(pilhas, tamanho);
+        printf("\n=========================================================================== \n");
+    }    
+    return jogo;
+}
+
+Jogo *criaNovoJogo(char dificuldade[7]){
+    Jogo *jogo;
+    jogo = (Jogo *)malloc(sizeof(Jogo));
+    strcpy(jogo->nome, "");
+    jogo->movimentos=0;
+    jogo->tempo=0;
+    strcpy(jogo->dificuldade, dificuldade);
+    strcpy(jogo->estado, "nao");    
+    return jogo;
+}
+
+    void
+    menu()
+{
+    int operacao = 0;
+    Jogo *jogos[100];
+    int contador_de_jogos = 0;
+    printf("\n Menu do jogo Torre de Hanoi:");
+    while (operacao != 1)
+    {
+        int dificuldade;
+        printf("\n\nSelecione a dificuldade:");
+        printf("\n -- 1 - Nivel Facil(dois temporarios):");
+        printf("\n -- 2 - Nivel Medio(um temporario):");
+        printf("\n -- 3 - Nivel Dificil(sem temporario):");
+        printf("\n -- 4 - Livro de Recordes");
+        printf("\n -- 5 - Sair do Jogo");
+        printf("\nInforme sua Opcao:");
+        scanf("%d", &dificuldade);
+        fflush(stdin);
+        system("cls");
+        switch (dificuldade)
+        {
+        case 1:
+            printf("\n Nivel Facil\n");
+            jogos[contador_de_jogos] = criaNovoJogo("Facil");            
+            jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 6);
+            contador_de_jogos++;
+            break;
+        case 2:
+            printf("\n Nivel Medio \n");
+            jogos[contador_de_jogos] = criaNovoJogo("Medio");           
+            jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 5);
+            contador_de_jogos++;
             break;
 
         case 3:
-            printf("\n Sair da rodada e voltar ao menu \n");
-
+            printf("\n Nivel Dificil \n");
+            jogos[contador_de_jogos] = criaNovoJogo("Dificil");           
+            jogos[contador_de_jogos] = comecaJogoFacil(jogos[contador_de_jogos], 4);
+            contador_de_jogos++;
             break;
+
         case 4:
-            printf("\n vertical \n");
-            printf("\n Mostrar pilhas\n");
-            for (int i = 0; i < 6; i++)
+            printf("\n Livro de Recordes \n");
+            for (int i = 0; i < contador_de_jogos; i++)
             {
-                mostraPilha(pilhas[i]);
+                mostraJogo(jogos[i]);
             }
             break;
-        case 5:
-            printf("\n Sair do Jogo \n");
 
+        case 5:
+            printf("\n Sair do jogo \n");
+            operacao = 1;
             break;
 
         default:
-            printf("\nOpção Inválida!\n");
+            printf("\nOpcao Invalida!\n");
         }
     }
-
-    printf("\n============================= VOCE VENCEU !!! ============================= \n");
-    mostraPilhasHorizontalFacil(pilhas, 6);
-    printf("\n=========================================================================== \n");
-}
-
-void menu()
-{
-    printf("\n Menu do jogo Torre de Hanoi:");
-    int dificuldade;
-    printf("\n\nSelecione a dificuldade:");
-    printf("\n -- 1 - Nivel Facil(dois temporarios):");
-    printf("\n -- 2 - Nivel Medio(um temporario):");
-    printf("\n -- 3 - Nivel Dificil(sem temporario):");
-    printf("\n -- 4 - Sair do Jogo");
-    printf("\nInforme sua Opcao:");
-    scanf("%d", &dificuldade);
-    fflush(stdin);
-    system("cls");
-    switch (dificuldade)
-    {
-    case 1:
-        printf("\n Nivel Facil\n");
-        comecaJogoFacil();
-        break;
-    case 2:
-        printf("\n Nivel Medio \n");
-
-        break;
-
-    case 3:
-        printf("\n Nivel Dificil \n");
-
-        break;
-
-    case 4:
-        printf("\n Saindo do jogo \n");
-
-        break;
-
-    default:
-        printf("\nOpção Inválida, saindo do jogo\n");
-    }
+    exit(0);
 }
