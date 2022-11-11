@@ -241,8 +241,13 @@ void menu2(LSE *ls)
         switch (op)
         {
         case 1:
-            printf("\n Inserção em ordem alfabetica\n");
-            insereNoInicio(ls, criaNovoSite());
+            printf("\n Inserção!\n");
+            aux = criaNovoSite();
+            aux = validaExistente(ls, aux);
+        if (aux != NULL){
+            insereNoInicio(ls,aux);
+            inserir(tabela,aux);
+        }
 
             break;
         case 2:
