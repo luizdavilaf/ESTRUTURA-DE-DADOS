@@ -4,6 +4,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "LSE.h"
+#include <time.h>   // for clock_t, clock(), CLOCKS_PER_SEC
+#include <unistd.h> // for sleep()
 
 #define TAM 101 // 2*50 e o proximo numero primo
 
@@ -19,6 +21,12 @@ void mostraSite(Site *novo)
 {
     printf("\nIp:%s", novo->ip);
     printf("\t Url:%s", novo->url);
+}
+
+void mostraSite2(Site novo)
+{
+    printf("\nIp:%s", novo.ip);
+    printf("\t Url:%s", novo.url);
 }
 
 Site *cadastraSite(char ip[], char url[])
@@ -111,7 +119,8 @@ void inicializarTabela(Site tabela[])
         strcpy(tabela[i].url, "");
 }
 
-int funcaoHash(int chave){
+int funcaoHash(int chave)
+{
     return chave % TAM;
 }
 
@@ -128,24 +137,28 @@ int funcaoHashString(char str[])
     return hash % TAM;
 }
 
-
-void inserir(Site tabela[], Site *novo){    
+void inserir(Site tabela[], Site *novo)
+{
     int id = funcaoHashString(novo->url);
-    while(strlen(tabela[id].url) > 0) // enquanto ocorrer colisão
-        {
-            id = funcaoHash(id + 1); // vai para a posição seguinte
-        }
+    while (strlen(tabela[id].url) > 0) // enquanto ocorrer colisão
+    {
+        id = funcaoHash(id + 1); // vai para a posição seguinte
+    }    
     tabela[id] = *novo;
 }
 
-
-Site* busca(Site tabela[], char chave[]){
+Site *busca(Site tabela[], char chave[])
+{
     // gera o índice a partir do nome a ser buscado
     int id = funcaoHashString(chave);
     printf("\nIndice gerada: %d\n", id);
-    while(strlen(tabela[id].url) > 0){ // enquanto o tamanho do nome for maior que zero
-        if(strcmp(tabela[id].url, chave) == 0) // se o nome for o nome procurad
-            return &tabela[id]; // retorna o endereço da pessoa
+    while (strlen(tabela[id].url) > 0)
+    {                                           // enquanto o tamanho do nome for maior que zero
+        if (strcmp(tabela[id].url, chave) == 0) // se o nome for o nome procurad
+        {
+            printf("\nENCONTRADO!!!! %d\n", id);
+            return &tabela[id];                 // retorna o endereço da pessoa
+        }
         else
             id = funcaoHash(id + 1); // vai para a posição seguinte
     }
@@ -156,11 +169,12 @@ void menu2(LSE *ls)
 {
     int op;
     Site *aux, tabela[TAM];
+    char url[20];
 
     inicializarTabela(tabela);
 
     printf("\n Menu para controlar os sites:");
-    Site *sites[50];
+    Site* sites[50];
 
     sites[0] = cadastraSite("ft.com", "83.58.231.165");
     sites[1] = cadastraSite("un.org", "153.14.188.74");
@@ -215,9 +229,10 @@ void menu2(LSE *ls)
     for (int i = 0; i < 50; i++)
     {
         aux = validaExistente(ls, sites[i]);
-        if (aux != NULL){
-            insereNoInicio(ls,aux);
-            inserir(tabela,aux);
+        if (aux != NULL)
+        {
+            insereNoInicio(ls, aux);
+            inserir(tabela, aux);
         }
     }
 
@@ -226,7 +241,7 @@ void menu2(LSE *ls)
 
         printf("\n\nInforme uma Opção:");
         printf("\n -- 1 - Inserir novo site:");
-        printf("\n -- 2 - Remover site:");
+        printf("\n -- 2 - buscar site:");
         printf("\n -- 3 - ");
         printf("\n -- 4 - Mostrar Lista de sites:");
         printf("\n -- 5 - ");
@@ -244,13 +259,29 @@ void menu2(LSE *ls)
             printf("\n Inserção!\n");
             aux = criaNovoSite();
             aux = validaExistente(ls, aux);
-        if (aux != NULL){
-            insereNoInicio(ls,aux);
-            inserir(tabela,aux);
-        }
+            if (aux != NULL)
+            {
+                insereNoInicio(ls, aux);
+                inserir(tabela, aux);
+            }
 
             break;
         case 2:
+            printf("\n Busca de por site: \n");
+            printf("\nInforme a url para busca:\n");
+            scanf("%s", url);
+            double time_spent = 0.0;
+            clock_t begin = clock();
+            aux = busca(tabela, url);
+            clock_t end = clock();
+            time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+            printf("O tempo de execucao pela busca em hash foi %f segundos", time_spent);
+            if(aux!=NULL){
+                printf("\nUrl encontrada");
+                mostraSite2(*aux);
+            }else{
+                printf("\nUrl NAO encontrada");
+            }
 
             break;
 
