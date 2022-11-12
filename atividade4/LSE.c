@@ -285,7 +285,9 @@ void MostraSitesDaTabela(Site *tabela[])
 {
     for (int i = 0; i < 50; i++)
     {
-        mostraSite(tabela[i]);
+       if(tabela[i]){
+            mostraSite(tabela[i]);
+        }
     }
 }
 
