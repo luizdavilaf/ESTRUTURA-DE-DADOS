@@ -12,6 +12,18 @@ typedef struct lse{
     int n_elementos;
 }LSE;
 
+typedef struct sitehash{
+    int chave;
+    char url[20];
+    char ip[15];   
+    struct sitehash *proximo;
+}SiteHash;
+
+typedef struct lista{
+    SiteHash *primeiro;
+    int n_elementos;
+}Lista;
+
 
 LSE* criaListaLSE();
 

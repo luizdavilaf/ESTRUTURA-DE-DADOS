@@ -17,6 +17,12 @@ LSE *criaListaLSE()
     return nova;
 }
 
+void inicializarLista(Lista *l)
+{
+    l->primeiro = NULL;
+    l->n_elementos = 0;
+}
+
 void mostraSite(Site *novo)
 {
     printf("\nIp:%s", novo->ip);
@@ -36,6 +42,46 @@ Site *cadastraSite(char ip[], char url[])
     strcpy(novoSite->url, url);
     novoSite->proximo = NULL;
     return novoSite;
+}
+
+
+void inserirNoInicioHash(Lista *l,char ip[], char url[], int valor)
+{
+    SiteHash *novo = malloc(sizeof(SiteHash));    
+    strcpy(novo->ip, ip);
+    strcpy(novo->url, url);
+    novo->chave = valor;
+    novo->proximo = l->primeiro;
+    l->primeiro = novo;
+    l->n_elementos++;
+}
+
+int buscarNaLSEHash(Lista *l, int valor)
+{
+    SiteHash *aux = l->primeiro;
+    if (aux == NULL)
+        printf("\n Lista Vazia!!\n");
+    else
+        while (aux != NULL)
+        {
+            if (aux->chave == valor)
+            {
+                return aux->chave;
+            }
+            aux = aux->proximo;
+        }
+    return 0;
+}
+
+void imprimir_lista(Lista *l)
+{
+    SiteHash *aux = l->primeiro;
+    printf(" Tam: %d: ", l->n_elementos);
+    while (aux)
+    {
+        printf("%d ", aux->chave);
+        aux = aux->proximo;
+    }
 }
 
 Site *validaExistente(LSE *ls, Site *novo)
@@ -143,7 +189,7 @@ void inserir(Site tabela[], Site *novo)
     while (strlen(tabela[id].url) > 0) // enquanto ocorrer colisão
     {
         id = funcaoHash(id + 1); // vai para a posição seguinte
-    }    
+    }
     tabela[id] = *novo;
 }
 
@@ -156,12 +202,30 @@ Site *busca(Site tabela[], char chave[])
     {                                           // enquanto o tamanho do nome for maior que zero
         if (strcmp(tabela[id].url, chave) == 0) // se o nome for o nome procurad
         {
-            printf("\nENCONTRADO!!!! %d\n", id);
-            return &tabela[id];                 // retorna o endereço da pessoa
+            printf("\nENCONTRADO NA HASH!!!! %d\n", id);
+            return &tabela[id]; // retorna o endereço da pessoa
         }
         else
             id = funcaoHash(id + 1); // vai para a posição seguinte
     }
+    return NULL;
+}
+
+Site *buscaLista(LSE *ls, char chave[])
+{
+    Site *aux = ls->primeiro;
+    if (aux == NULL)
+        printf("\n Lista Vazia!!\n");
+    else
+        while (aux != NULL)
+        {
+            if (strcmp(aux->url, chave) == 0) // se o nome for o nome procurad
+            {
+                printf("\nENCONTRADO NA LISTA!!!!\n");
+                return aux; // retorna o endereço da pessoa
+            }
+            aux = aux->proximo;
+        }
     return NULL;
 }
 
@@ -174,58 +238,58 @@ void menu2(LSE *ls)
     inicializarTabela(tabela);
 
     printf("\n Menu para controlar os sites:");
-    Site* sites[50];
+    Site *sites[50];
 
-    sites[0] = cadastraSite("ft.com", "83.58.231.165");
-    sites[1] = cadastraSite("un.org", "153.14.188.74");
-    sites[2] = cadastraSite("360.cn", "77.23.212.64");
-    sites[3] = cadastraSite("utexas.edu", "154.84.51.18");
-    sites[4] = cadastraSite("jigsy.com", "79.133.190.191");
-    sites[5] = cadastraSite("networkadvertising.org", "44.215.163.47");
-    sites[6] = cadastraSite("exblog.jp", "33.124.176.70");
-    sites[7] = cadastraSite("bravesites.com", "41.79.185.136");
-    sites[8] = cadastraSite("scientificamerican.com", "154.177.38.240");
-    sites[9] = cadastraSite("mail.ru", "198.47.234.147");
-    sites[10] = cadastraSite("last.fm", "226.130.219.46");
-    sites[11] = cadastraSite("friendfeed.com", "57.244.226.201");
-    sites[12] = cadastraSite("hubpages.com", "250.132.112.229");
-    sites[13] = cadastraSite("sbwire.com", "77.241.60.188");
-    sites[14] = cadastraSite("mediafire.com", "205.37.187.145");
-    sites[15] = cadastraSite("biglobe.ne.jp", "225.197.167.95");
-    sites[16] = cadastraSite("si.edu", "72.69.121.104");
-    sites[17] = cadastraSite("bravesites.com", "241.23.51.33");
-    sites[18] = cadastraSite("g.co", "13.68.1.94");
-    sites[19] = cadastraSite("columbia.edu", "136.93.155.71");
-    sites[20] = cadastraSite("newyorker.com", "174.115.101.157");
-    sites[21] = cadastraSite("blog.com", "199.58.236.221");
-    sites[22] = cadastraSite("omniture.com", "226.165.40.136");
-    sites[23] = cadastraSite("yellowbook.com", "122.152.132.60");
-    sites[24] = cadastraSite("europa.eu", "91.225.98.50");
-    sites[25] = cadastraSite("apple.com", "96.28.64.179");
-    sites[26] = cadastraSite("dedecms.com", "124.215.225.195");
-    sites[27] = cadastraSite("si.edu", "168.15.206.9");
-    sites[28] = cadastraSite("goodreads.com", "43.218.8.219");
-    sites[29] = cadastraSite("bizjournals.com", "229.145.65.36");
-    sites[30] = cadastraSite("squidoo.com", "37.88.166.204");
-    sites[31] = cadastraSite("webmd.com", "135.189.33.79");
-    sites[32] = cadastraSite("admin.ch", "95.100.207.80");
-    sites[33] = cadastraSite("spiegel.de", "65.187.98.128");
-    sites[34] = cadastraSite("godaddy.com", "25.20.15.213");
-    sites[35] = cadastraSite("who.int", "168.127.114.201");
-    sites[36] = cadastraSite("army.mil", "103.66.42.19");
-    sites[37] = cadastraSite("ebay.com", "185.176.146.255");
-    sites[38] = cadastraSite("phoca.cz", "21.21.79.127");
-    sites[39] = cadastraSite("lycos.com", "72.104.184.141");
-    sites[40] = cadastraSite("pcworld.com", "229.10.46.44");
-    sites[41] = cadastraSite("squidoo.com", "245.206.112.188");
-    sites[42] = cadastraSite("symantec.com", "200.233.57.32");
-    sites[43] = cadastraSite("ehow.com", "114.246.229.171");
-    sites[44] = cadastraSite("baidu.com", "30.147.50.250");
-    sites[45] = cadastraSite("theglobeandmail.com", "232.231.113.139");
-    sites[46] = cadastraSite("tuttocitta.it", "101.158.17.16");
-    sites[47] = cadastraSite("bravesites.com", "111.134.248.163");
-    sites[48] = cadastraSite("theglobeandmail.com", "43.203.12.13");
-    sites[49] = cadastraSite("phpbb.com", "40.60.188.215");
+    sites[0] = cadastraSite("83.58.231.165", "ft.com");
+    sites[1] = cadastraSite("153.14.188.74", "un.org");
+    sites[2] = cadastraSite("77.23.212.64", "360.cn");
+    sites[3] = cadastraSite("154.84.51.18", "utexas.edu");
+    sites[4] = cadastraSite("79.133.190.191", "jigsy.com");
+    sites[5] = cadastraSite("44.215.163.47", "networkadvertising.org");
+    sites[6] = cadastraSite("33.124.176.70", "exblog.jp");
+    sites[7] = cadastraSite("41.79.185.136", "bravesites.com");
+    sites[8] = cadastraSite("154.177.38.240", "scientificamerican.com");
+    sites[9] = cadastraSite("198.47.234.147", "mail.ru");
+    sites[10] = cadastraSite("226.130.219.46", "last.fm");
+    sites[11] = cadastraSite("57.244.226.201", "friendfeed.com");
+    sites[12] = cadastraSite("250.132.112.229", "hubpages.com");
+    sites[13] = cadastraSite("77.241.60.188", "sbwire.com");
+    sites[14] = cadastraSite("205.37.187.145", "mediafire.com");
+    sites[15] = cadastraSite("225.197.167.95", "biglobe.ne.jp");
+    sites[16] = cadastraSite("72.69.121.104", "si.edu");
+    sites[17] = cadastraSite("241.23.51.33", "bravesites2.com");
+    sites[18] = cadastraSite("13.68.1.94", "g.co");
+    sites[19] = cadastraSite("136.93.155.71", "columbia.edu");
+    sites[20] = cadastraSite("174.115.101.157", "newyorker.com");
+    sites[21] = cadastraSite("199.58.236.221", "blog.com");
+    sites[22] = cadastraSite("226.165.40.136", "omniture.com");
+    sites[23] = cadastraSite("122.152.132.60", "yellowbook.com");
+    sites[24] = cadastraSite("91.225.98.50", "europa.eu");
+    sites[25] = cadastraSite("96.28.64.179", "apple.com");
+    sites[26] = cadastraSite("124.215.225.195", "dedecms.com");
+    sites[27] = cadastraSite("168.15.206.9", "si2.edu");
+    sites[28] = cadastraSite("43.218.8.219", "goodreads.com");
+    sites[29] = cadastraSite("229.145.65.36", "bizjournals.com");
+    sites[30] = cadastraSite("37.88.166.204", "squidoo2.com");
+    sites[31] = cadastraSite("135.189.33.79", "webmd.com");
+    sites[32] = cadastraSite("95.100.207.80", "admin.ch");
+    sites[33] = cadastraSite("65.187.98.128", "spiegel.de");
+    sites[34] = cadastraSite("25.20.15.213", "godaddy.com");
+    sites[35] = cadastraSite("168.127.114.201", "who.int");
+    sites[36] = cadastraSite("103.66.42.19", "army.mil");
+    sites[37] = cadastraSite("185.176.146.255", "ebay.com");
+    sites[38] = cadastraSite("21.21.79.127", "phoca.cz");
+    sites[39] = cadastraSite("72.104.184.141", "lycos.com");
+    sites[40] = cadastraSite("229.10.46.44", "pcworld.com");
+    sites[41] = cadastraSite("245.206.112.188", "squidoo.com");
+    sites[42] = cadastraSite("200.233.57.32", "symantec.com");
+    sites[43] = cadastraSite("114.246.229.171", "ehow.com");
+    sites[44] = cadastraSite("30.147.50.250", "baidu.com");
+    sites[45] = cadastraSite("232.231.113.139", "theglobeandmail.com");
+    sites[46] = cadastraSite("101.158.17.16", "tuttocitta.it");
+    sites[47] = cadastraSite("111.134.248.163", "bravesites3.com");
+    sites[48] = cadastraSite("43.203.12.13", "theglobeandmail.com");
+    sites[49] = cadastraSite("40.60.188.215", "phpbb.com");
     for (int i = 0; i < 50; i++)
     {
         aux = validaExistente(ls, sites[i]);
@@ -264,7 +328,6 @@ void menu2(LSE *ls)
                 insereNoInicio(ls, aux);
                 inserir(tabela, aux);
             }
-
             break;
         case 2:
             printf("\n Busca de por site: \n");
@@ -275,14 +338,33 @@ void menu2(LSE *ls)
             aux = busca(tabela, url);
             clock_t end = clock();
             time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-            printf("O tempo de execucao pela busca em hash foi %f segundos", time_spent);
-            if(aux!=NULL){
-                printf("\nUrl encontrada");
+
+            if (aux != NULL)
+            {
+                printf("\nUrl encontrada na hash");
                 mostraSite2(*aux);
-            }else{
+            }
+            else
+            {
+                printf("\nUrl NAO encontrada na hash");
+            }
+            printf("\nO tempo de execucao pela busca em hash foi %f segundos", time_spent);
+            time_spent = 0.0;
+            begin = clock();
+            aux = buscaLista(ls, url);
+            end = clock();
+            time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+
+            if (aux != NULL)
+            {
+                printf("\nUrl encontrada na lista");
+                mostraSite2(*aux);
+            }
+            else
+            {
                 printf("\nUrl NAO encontrada");
             }
-
+            printf("\nO tempo de execucao pela lista encadeada foi %f segundos", time_spent);
             break;
 
         case 3:
