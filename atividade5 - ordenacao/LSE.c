@@ -7,7 +7,7 @@
 typedef struct contato
 {
     char nome[20];
-    char telefone[20];
+    char telefone[30];
     char tipo;
     struct contato *proximo;
 } Contato;
@@ -30,10 +30,20 @@ LSE *criaListaLSE()
     return nova;
 }
 
-/**
- * Aloca memória para um novo Elemento (Contato)
- */
-Contato *cadastraContato(char nome[], char tel[], char tp)
+void inicializaContato(Contato *contato, char nome[], char telefone[], char tipo)
+{
+    strcpy(contato->nome, nome);
+    strcpy(contato->telefone, telefone);
+    contato->tipo = tipo;
+    contato->proximo =NULL;
+}
+
+
+
+    /**
+     * Aloca memória para um novo Elemento (Contato)
+     */
+    Contato *cadastraContato(char nome[], char tel[], char tp)
 {
     Contato *novoContato = (Contato *)malloc(sizeof(Contato));
     strcpy(novoContato->nome, nome);
@@ -275,36 +285,79 @@ void menu2(LSE *listaOriginal)
 {
     printf("\n Menu para controlar a Agenda de Contatos:");
     int op, posicao, id = 1;
-    int tam = 10;
+    int tam = 50;
     char nome[20];
     Contato *aux;
     LSE *listaSelectionSort = criaListaLSE();
-    // Aluno pedro2 = *pedro; // passar apenas os dados de pedro
-    // insereNoFim(ListaMatematica, &pedro2);
-    Contato *contatos[10];
-    contatos[0] = cadastraContato("roberto", "1231", 'o');
-    contatos[1] = cadastraContato("alberto", "22333", 'f');
-    contatos[2] = cadastraContato("mara", "33333", 'f');
-    contatos[3] = cadastraContato("luiz", "44444", 'f');
-    contatos[4] = cadastraContato("bruno", "1231", 'o');
-    contatos[5] = cadastraContato("nicole", "1231", 'o');
-    contatos[6] = cadastraContato("guilherme", "1231", 'o');
-    contatos[7] = cadastraContato("luciano", "1231", 'o');
-    contatos[8] = cadastraContato("veiga", "1231", 'o');
-    contatos[9] = cadastraContato("neymar", "1231", 'o');
+    LSE *insertionSort = criaListaLSE();
+    LSE *bubbleSort = criaListaLSE();
+    LSE *shellSort = criaListaLSE();
+    LSE *quickSort = criaListaLSE();
+
+    Contato contatos[50];
+    inicializaContato(&contatos[0] ,"roberto", "1231", "o");
+    inicializaContato(&contatos[1], "alberto", "22333", "f");
+    inicializaContato(&contatos[2], "mara", "33333", "f");
+    inicializaContato(&contatos[3], "luiz", "44444", "f");
+    inicializaContato(&contatos[4], "bruno", "1231", "o");
+    inicializaContato(&contatos[5], "nicole", "1231", "o");
+    inicializaContato(&contatos[6], "guilherme", "1231", "o");
+    inicializaContato(&contatos[7], "luciano", "1231", "o");
+    inicializaContato(&contatos[8], "veiga", "1231", "o");
+    inicializaContato(&contatos[9], "neymar", "1231", "o");
+    inicializaContato(&contatos[10], "Bridgette", "(656)9629438", "F");
+    inicializaContato(&contatos[11], "Alverta", "(482)3743898", "F");
+    inicializaContato(&contatos[12], "Barbee", "(508)9327299", "F");
+    inicializaContato(&contatos[13], "Atlante", "(965)4922181", "F");
+    inicializaContato(&contatos[14], "Belita", "(146)1863796", "F");
+    inicializaContato(&contatos[15], "Liana", "(267)5781499", "F");
+    inicializaContato(&contatos[16], "Wylie", "(434)4522818", "M");
+    inicializaContato(&contatos[17], "Lucinda", "(266)7909881", "F");
+    inicializaContato(&contatos[18], "Gilberto", "(779)1327261", "M");
+    inicializaContato(&contatos[19], "Berton", "(129)2757780", "M");
+    inicializaContato(&contatos[20], "Town", "(159)5918331", "M");
+    inicializaContato(&contatos[21], "Zechariah", "(221)2485759", "M");
+    inicializaContato(&contatos[22], "Nicolea", "(914)5286390", "F");
+    inicializaContato(&contatos[23], "Maribeth", "(145)6020985", "F");
+    inicializaContato(&contatos[24], "Savina", "(167)7505362", "F");
+    inicializaContato(&contatos[25], "Vivianne", "(258)3220696", "F");
+    inicializaContato(&contatos[26], "Menard", "(765)6957037", "M");
+    inicializaContato(&contatos[27], "Emmett", "(929)4641114", "M");
+    inicializaContato(&contatos[28], "Grantley", "(696)6854161", "M");
+    inicializaContato(&contatos[29], "Pete", "(581)9537135", "M");
+    inicializaContato(&contatos[30], "Clarinda", "(109)5730357", "F");
+    inicializaContato(&contatos[31], "Gibbie", "(868)5742642", "M");
+    inicializaContato(&contatos[32], "Neddy", "(307)6424194", "M");
+    inicializaContato(&contatos[33], "Raeann", "(216)9201572", "F");
+    inicializaContato(&contatos[34], "Sylvan", "(497)9356491", "M");
+    inicializaContato(&contatos[35], "Allsun", "(710)9442635", "F");
+    inicializaContato(&contatos[36], "Brad", "(755)2813236", "M");
+    inicializaContato(&contatos[37], "Shirlene", "(297)3211563", "F");
+    inicializaContato(&contatos[38], "Abbe", "(107)2966402", "M");
+    inicializaContato(&contatos[39], "Lancelot", "(257)8247865", "M");
+    inicializaContato(&contatos[40], "Tymothy", "(701)3215254", "M");
+    inicializaContato(&contatos[41], "Deeanne", "(167)4853138", "F");
+    inicializaContato(&contatos[42], "Enos", "(819)3084367", "M");
+    inicializaContato(&contatos[43], "Menard", "(886)7350054", "M");
+    inicializaContato(&contatos[44], "Wilek", "(966)2934212", "M");
+    inicializaContato(&contatos[45], "Dallon", "(823)5807873", "M");
+    inicializaContato(&contatos[46], "Matteo", "(686)9209185", "M");
+    inicializaContato(&contatos[47], "Fayth", "(173)5065759", "F");
+    inicializaContato(&contatos[48], "Ode", "(846)8659021", "M");
+    inicializaContato(&contatos[49], "Catherin", "(749)6960757", "F");
+
+    /* Contato contatos2[50];
+    memcpy(contatos2, contatos, 50 * sizeof(Contato)); */
 
     for (int i = 0; i < tam; i++)
     {
-        aux = contatos[i];
+        aux = &contatos[i];
         insereNoInicio(listaOriginal, aux);
-        Contato aux2 = *aux;
+        //aux = &contatos2[i];
+        insereNoInicio(listaSelectionSort, aux);
+        
     }
-    for (int i = 10; i > 0; i--)
-    {
-        aux = contatos[i];
-        Contato aux2 = *aux;
-        insereNoInicio(listaSelectionSort, &aux2);
-    }
+    
     printf("\n Lista original:");
     mostraLista(listaOriginal);
     printf("\n Lista selection:");
